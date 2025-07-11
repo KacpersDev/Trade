@@ -1,5 +1,7 @@
 package dev.kacperm.trade;
 
+import dev.kacperm.trade.mongo.MongoManager;
+import dev.kacperm.trade.trade.manager.TradeManager;
 import dev.kacperm.trade.utils.config.Config;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,6 +17,9 @@ public final class Trade extends JavaPlugin {
 
     private Config configuration, language;
 
+    private MongoManager mongoManager;
+    private TradeManager tradeManager;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -22,11 +27,20 @@ public final class Trade extends JavaPlugin {
         this.loadConfiguration();
         this.loadListener();
         this.loadCommand();
+
+        this.mongoManager = new MongoManager();
+        this.tradeManager = new TradeManager();
     }
 
     @Override
     public void onDisable() {
+        this.tradeManager.saveAll();
+
         instance = null;
+
+        if (this.mongoManager != null) {
+            this.mongoManager.close();
+        }
     }
 
     private void loadConfiguration() {

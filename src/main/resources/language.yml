@@ -1,0 +1,8 @@
+player-required: "&cYou must be a player in order to execute this command."
+player-offline: "&c{player} you are trying to trade with is offline."
+
+trade:
+  usage:
+    - ""
+    - "&c/trade <player>"
+    - ""
