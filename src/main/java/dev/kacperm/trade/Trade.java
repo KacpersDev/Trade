@@ -4,6 +4,7 @@ import dev.kacperm.trade.mongo.MongoManager;
 import dev.kacperm.trade.trade.manager.TradeManager;
 import dev.kacperm.trade.utils.config.Config;
 import lombok.Getter;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,8 @@ public final class Trade extends JavaPlugin {
 
     private MongoManager mongoManager;
     private TradeManager tradeManager;
+
+    private final NamespacedKey button = new NamespacedKey(this, "button");
 
     @Override
     public void onEnable() {

@@ -1,1 +1,37 @@
 mongo-uri: ""
+
+trade-countdown: 5
+
+trade-inventory:
+  title: "&cTrade"
+  size: 54
+  trade-button:
+    not-confirmed:
+      item: "RED_WOOL"
+      name: "&cNOT CONFIRMED."
+      lore:
+        - ""
+        - "&7Click in order to confirm the trade."
+        - ""
+    confirmed:
+      item: "GREEN_WOOL"
+      name: "&aCONFIRMED."
+      lore:
+        - ""
+        - "&7Trade has been confirmed."
+        - ""
+    item-between:
+      item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+      name: ""
+      lore:
+        - ""
+      slots:
+        - 4
+        - 13
+        - 22
+        - 31
+        - 40
+        - 49
+    button-slots:
+      - 0
+      - 8

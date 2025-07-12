@@ -6,3 +6,8 @@ trade:
     - ""
     - "&c/trade <player>"
     - ""
+  already-sent: "&cYou have already sent a trade request to this player."
+  request-sent: "&aSuccessfully set trade request to {player}"
+  request-received: "&cSuccessfully request trade request from {player}"
+  self: "&cYou cannot trade with yourself."
+  not-sent: "&c{player} has not send any trade request to you."

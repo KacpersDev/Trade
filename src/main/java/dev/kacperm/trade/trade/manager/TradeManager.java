@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import dev.kacperm.trade.Trade;
+import dev.kacperm.trade.trade.CurrentTrade;
 import dev.kacperm.trade.trade.PlayerTrade;
 import dev.kacperm.trade.utils.serializer.ItemStackSerializer;
 import lombok.Getter;
@@ -17,6 +18,9 @@ import java.util.*;
 public class TradeManager {
 
     private final Map<UUID, List<PlayerTrade>> trades = new HashMap<>();
+    private final Set<CurrentTrade> currentTrades = new HashSet<>();
+
+    private final Map<UUID, List<UUID>> requests = new HashMap<>();
 
     public void load(UUID uniqueId) throws IOException {
         if (!trades.containsKey(uniqueId)) {
@@ -55,5 +59,13 @@ public class TradeManager {
 
     public void saveAll() {
         trades.keySet().forEach(this::save);
+    }
+
+    public CurrentTrade getTrade(UUID uuid) {
+        for (CurrentTrade currentTrade : currentTrades) {
+            if (currentTrade.getPlayer1().equals(uuid) || currentTrade.getPlayer2().equals(uuid)) return currentTrade;
+        }
+
+        return null;
     }
 }
