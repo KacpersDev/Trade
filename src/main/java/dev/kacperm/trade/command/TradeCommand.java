@@ -84,7 +84,8 @@ public class TradeCommand implements CommandExecutor {
 
             senderRequests.remove(player.getUniqueId());
             Inventory inventory = TradeInventory.trade();
-            Trade.getInstance().getTradeManager().getCurrentTrades().add(new CurrentTrade(player.getUniqueId(), target.getUniqueId(), inventory, false,
+            Trade.getInstance().getTradeManager().getCurrentTrades().add(new CurrentTrade(player.getUniqueId(), target.getUniqueId(), inventory,
+                    new ArrayList<>(), new ArrayList<>(), false,
                     Trade.getInstance().getConfiguration().getConfiguration().getInt("trade-countdown")));
 
             player.openInventory(inventory);
