@@ -1,14 +1,20 @@
 package dev.kacperm.trade;
 
+import dev.kacperm.trade.command.TradeAdminCommand;
+import dev.kacperm.trade.command.TradeCommand;
+import dev.kacperm.trade.listener.DatabaseListener;
+import dev.kacperm.trade.listener.TradeListener;
 import dev.kacperm.trade.mongo.MongoManager;
 import dev.kacperm.trade.trade.manager.TradeManager;
 import dev.kacperm.trade.utils.config.Config;
 import lombok.Getter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Objects;
 
 @Getter
 public final class Trade extends JavaPlugin {
@@ -56,7 +62,13 @@ public final class Trade extends JavaPlugin {
         this.language.create();
     }
 
-    private void loadListener() {}
+    private void loadListener(PluginManager pluginManager) {
+        pluginManager.registerEvents(new TradeListener(), this);
+        pluginManager.registerEvents(new DatabaseListener(), this);
+    }
 
-    private void loadCommand() {}
+    private void loadCommand() {
+        Objects.requireNonNull(getCommand("trade")).setExecutor(new TradeCommand());
+        Objects.requireNonNull(getCommand("tradeadmin")).setExecutor(new TradeAdminCommand());
+    }
 }

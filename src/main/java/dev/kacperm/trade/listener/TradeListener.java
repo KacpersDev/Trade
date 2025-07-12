@@ -2,12 +2,17 @@ package dev.kacperm.trade.listener;
 
 import dev.kacperm.trade.Trade;
 import dev.kacperm.trade.trade.CurrentTrade;
+import dev.kacperm.trade.trade.PlayerTrade;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class TradeListener implements Listener {
 
@@ -24,6 +29,28 @@ public class TradeListener implements Listener {
 
             if (button.equalsIgnoreCase("not-confirmed")) {
                 currentTrade.setAccepted(currentTrade.validateAcceptation());
+
+                if (currentTrade.isAccepted()) {
+                    Trade.getInstance().getTradeManager().getTrades().putIfAbsent(currentTrade.getPlayer1(), new ArrayList<>());
+                    Trade.getInstance().getTradeManager().getTrades().putIfAbsent(currentTrade.getPlayer2(), new ArrayList<>());
+
+                    UUID tradeId = UUID.randomUUID();
+
+                    Trade.getInstance().getTradeManager().getTrades().get(currentTrade.getPlayer1()).add(new PlayerTrade(tradeId, currentTrade.getPlayer1(), currentTrade.getPlayer2(),
+                            currentTrade.getPlayer1Items().toArray(new ItemStack[54]), currentTrade.getPlayer2Items().toArray(new ItemStack[54])));
+                    Trade.getInstance().getTradeManager().getTrades().get(currentTrade.getPlayer2()).add(new PlayerTrade(tradeId, currentTrade.getPlayer1(), currentTrade.getPlayer2(),
+                            currentTrade.getPlayer1Items().toArray(new ItemStack[54]), currentTrade.getPlayer2Items().toArray(new ItemStack[54])));
+
+                    currentTrade.getPlayer(currentTrade.getPlayer1()).ifPresent(player -> {
+                        player.closeInventory();
+                        currentTrade.getPlayer2Items().forEach(i -> player.getInventory().addItem(i));
+                    });
+
+                    currentTrade.getPlayer(currentTrade.getPlayer2()).ifPresent(player -> {
+                        player.closeInventory();
+                        currentTrade.getPlayer1Items().forEach(i -> player.getInventory().addItem(i));
+                    });
+                }
             }
         }
 

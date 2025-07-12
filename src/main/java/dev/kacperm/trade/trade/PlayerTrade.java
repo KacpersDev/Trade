@@ -11,5 +11,5 @@ import java.util.UUID;
 public class PlayerTrade {
 
     private UUID tradeId, player1, player2;
-    private ItemStack[] tradedItems;
+    private ItemStack[] player1Items, player2Items;
 }

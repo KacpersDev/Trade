@@ -3,3 +3,6 @@ version: '1.0-SNAPSHOT'
 main: dev.kacperm.trade.Trade
 api-version: '1.21'
 authors: [Pulsir Development Team]
+commands:
+  trade:
+  tradeadmin:
