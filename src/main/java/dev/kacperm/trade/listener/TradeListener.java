@@ -67,11 +67,11 @@ public class TradeListener implements Listener {
 
         currentTrade.getPlayer(currentTrade.getPlayer1()).ifPresent(player -> {
             player.closeInventory();
-            currentTrade.getPlayer1Items().forEach(i -> player.getInventory().addItem(i));
+            currentTrade.getPlayer2Items().forEach(i -> player.getInventory().addItem(i));
         });
 
         currentTrade.getPlayer(currentTrade.getPlayer2()).ifPresent(player -> {
-            currentTrade.getPlayer2Items().forEach(i -> player.getInventory().addItem(i));
+            currentTrade.getPlayer1Items().forEach(i -> player.getInventory().addItem(i));
             player.closeInventory();
         });
     }
