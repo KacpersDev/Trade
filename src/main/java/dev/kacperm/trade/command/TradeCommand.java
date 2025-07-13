@@ -29,7 +29,12 @@ public class TradeCommand implements CommandExecutor {
             usage(sender);
             return false;
         } else if (args[0].equalsIgnoreCase("request")) {
-            Player target = Bukkit.getPlayer(args[0]);
+            if (args.length == 1) {
+                usage(sender);
+                return false;
+            }
+
+            Player target = Bukkit.getPlayer(args[1]);
 
             if (target == null || !target.isOnline()) {
                 sender.sendMessage(Color.translate(Objects.requireNonNull(Trade.getInstance().getLanguage()
@@ -55,9 +60,9 @@ public class TradeCommand implements CommandExecutor {
             senderRequests.add(target.getUniqueId());
 
             player.sendMessage(Color.translate(Objects.requireNonNull(Trade.getInstance().getLanguage().getConfiguration()
-                    .getString("trade-request-sent")).replace("{player}", target.getName())));
+                    .getString("trade.request-sent")).replace("{player}", target.getName())));
             target.sendMessage(Color.translate((Objects.requireNonNull(Trade.getInstance().getLanguage().getConfiguration()
-                    .getString("trade-request-received")).replace("{player}", player.getName()))));
+                    .getString("trade.request-received")).replace("{player}", player.getName()))));
 
             return true;
         } else if (args[0].equalsIgnoreCase("accept")) {
@@ -77,8 +82,9 @@ public class TradeCommand implements CommandExecutor {
             List<UUID> senderRequests = requests.get(target.getUniqueId());
 
             if (senderRequests == null || !senderRequests.contains(player.getUniqueId())) {
-                player.sendMessage(Color.translate(Objects.requireNonNull(Trade.getInstance().getLanguage()
-                        .getConfiguration().getString("trade.not-sent"))));
+                player.sendMessage(Color.translate(Objects.requireNonNull(Objects.requireNonNull(Trade.getInstance().getLanguage()
+                                .getConfiguration().getString("trade.not-sent"))
+                        .replace("{player}", args[1]))));
                 return false;
             }
 

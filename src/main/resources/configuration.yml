@@ -2,6 +2,10 @@ mongo-uri: "mongodb://46.247.108.133:25569/"
 
 trade-countdown: 5
 
+slots:
+  player-1: [9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39,45,46,47,48]
+  player-2: [5,6,7,8,14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50,51,52,53]
+
 trade-inventory:
   title: "&cTrade"
   size: 54
@@ -32,9 +36,7 @@ trade-inventory:
         - 31
         - 40
         - 49
-    button-slots:
-      - 0
-      - 8
+    button-slots: [0,8]
 
 trade-view-inventory:
   title: "&cTrade View"

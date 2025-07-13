@@ -15,11 +15,12 @@ trade-admin:
 trade:
   usage:
     - ""
-    - "&c/trade <player>"
+    - "&c/trade request <player>"
+    - "&c/trade accept <player>"
     - ""
   already-sent: "&cYou have already sent a trade request to this player."
   request-sent: "&aSuccessfully set trade request to {player}"
-  request-received: "&cSuccessfully request trade request from {player}"
+  request-received: "&cYou have received a trade request from {player}"
   self: "&cYou cannot trade with yourself."
   not-sent: "&c{player} has not send any trade request to you."
   limit-history: "&eShowing &f{player} &ehistory &flimit = {limit}"

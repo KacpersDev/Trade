@@ -48,16 +48,18 @@ public class TradeManager {
     }
 
     public void save(UUID uniqueId) {
-        for (PlayerTrade playerTrade : trades.get(uniqueId)) {
-            Document document = new Document();
-            document.append("tradeId", playerTrade.getTradeId().toString())
-                    .append("player1", playerTrade.getPlayer1().toString())
-                    .append("player2", playerTrade.getPlayer2().toString())
-                    .append("items1", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer1Items()))
-                    .append("items2", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer2Items()));
+        if (trades.containsKey(uniqueId)) {
+            for (PlayerTrade playerTrade : trades.get(uniqueId)) {
+                Document document = new Document();
+                document.append("tradeId", playerTrade.getTradeId().toString())
+                        .append("player1", playerTrade.getPlayer1().toString())
+                        .append("player2", playerTrade.getPlayer2().toString())
+                        .append("items1", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer1Items()))
+                        .append("items2", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer2Items()));
 
-            Trade.getInstance().getMongoManager().getTrades().replaceOne(Filters.eq("uuid", playerTrade.getTradeId()),
-                    document, new ReplaceOptions().upsert(true));
+                Trade.getInstance().getMongoManager().getTrades().replaceOne(Filters.eq("uuid", playerTrade.getTradeId()),
+                        document, new ReplaceOptions().upsert(true));
+            }
         }
     }
 

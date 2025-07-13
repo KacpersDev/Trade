@@ -16,15 +16,12 @@ public class ItemStackSerializer {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 
-            // Write the size of the inventory
             dataOutput.writeInt(items.length);
 
-            // Save every element in the list
             for (ItemStack item : items) {
                 dataOutput.writeObject(item);
             }
 
-            // Serialize that array
             dataOutput.close();
             return Base64Coder.encodeLines(outputStream.toByteArray());
         } catch (Exception e) {

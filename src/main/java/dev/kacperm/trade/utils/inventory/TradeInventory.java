@@ -22,13 +22,13 @@ public class TradeInventory {
                 Trade.getInstance().getConfiguration().getConfiguration().getInt("trade-inventory.size"),
                 Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.title"))));
 
-        ItemStack notConfirmed = new ItemStack(Material.valueOf(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.not-confirmed")));
+        ItemStack notConfirmed = new ItemStack(Material.valueOf(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.not-confirmed.item")));
         ItemStack itemBetween = new ItemStack(Material.valueOf(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.item-between.item")));
 
         ItemMeta notConfirmedMeta = notConfirmed.getItemMeta();
         ItemMeta itemBetweenMeta = itemBetween.getItemMeta();
 
-        notConfirmedMeta.displayName(Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.not-confirmed-name"))));
+        notConfirmedMeta.displayName(Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.not-confirmed.name"))));
         itemBetweenMeta.displayName(Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.item-between.name"))));
 
         notConfirmedMeta.getPersistentDataContainer().set(Trade.getInstance().getButton(), PersistentDataType.STRING, "not-confirmed");
@@ -37,7 +37,7 @@ public class TradeInventory {
         List<Component> notConfirmedLore = new ArrayList<>();
         List<Component> itemBetweenLore = new ArrayList<>();
 
-        for (final String s : Trade.getInstance().getConfiguration().getConfiguration().getStringList("trade-inventory.trade-button.not-confirmed-lore") ) {
+        for (final String s : Trade.getInstance().getConfiguration().getConfiguration().getStringList("trade-inventory.trade-button.not-confirmed.lore") ) {
             notConfirmedLore.add(Color.translate(s));
         }
         for (final String s : Trade.getInstance().getConfiguration().getConfiguration().getStringList("trade-inventory.trade-button.item-between.lore") ) {
@@ -50,8 +50,8 @@ public class TradeInventory {
         notConfirmed.setItemMeta(notConfirmedMeta);
         itemBetween.setItemMeta(itemBetweenMeta);
 
-        Trade.getInstance().getLanguage().getConfiguration().getStringList("trade-inventory.trade-button.button-slots").forEach(slot ->
-                inventory.setItem(Integer.parseInt(slot), notConfirmed));
+        Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("trade-inventory.trade-button.button-slots").forEach(slot ->
+                inventory.setItem(slot, notConfirmed));
 
         for (int i : Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("trade-inventory.trade-button.item-between.slots")) {
             inventory.setItem(i, itemBetween);
