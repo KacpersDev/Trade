@@ -1,6 +1,7 @@
 package dev.kacperm.trade.utils.inventory;
 
 import dev.kacperm.trade.Trade;
+import dev.kacperm.trade.trade.PlayerTrade;
 import dev.kacperm.trade.utils.color.Color;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -54,6 +55,44 @@ public class TradeInventory {
 
         for (int i : Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("trade-inventory.trade-button.item-between.slots")) {
             inventory.setItem(i, itemBetween);
+        }
+
+        return inventory;
+    }
+
+    public static Inventory playerTrade(PlayerTrade trade) {
+        Inventory inventory = Bukkit.createInventory(null,
+                Trade.getInstance().getConfiguration().getConfiguration().getInt("trade-view-inventory.size"),
+                Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-view-inventory.title"))));
+
+        ItemStack itemBetween = new ItemStack(Material.valueOf(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.item-between.item")));
+
+        ItemMeta itemBetweenMeta = itemBetween.getItemMeta();
+
+        itemBetweenMeta.displayName(Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.item-between.name"))));
+
+        itemBetweenMeta.getPersistentDataContainer().set(Trade.getInstance().getButton(), PersistentDataType.STRING, "item-between");
+
+        List<Component> itemBetweenLore = new ArrayList<>();
+
+        for (final String s : Trade.getInstance().getConfiguration().getConfiguration().getStringList("trade-inventory.trade-button.item-between.lore") ) {
+            itemBetweenLore.add(Color.translate(s));
+        }
+
+        itemBetweenMeta.lore(itemBetweenLore);
+
+        itemBetween.setItemMeta(itemBetweenMeta);
+
+        for (int i : Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("trade-inventory.trade-button.item-between.slots")) {
+            inventory.setItem(i, itemBetween);
+        }
+
+        for (int i = 0; i < inventory.getSize(); i++) {
+            if (trade.getPlayer1Items()[i] != null) {
+                inventory.setItem(i, trade.getPlayer1Items()[i]);
+            } else if (trade.getPlayer2Items()[i] != null) {
+                inventory.setItem(i, trade.getPlayer2Items()[i]);
+            }
         }
 
         return inventory;

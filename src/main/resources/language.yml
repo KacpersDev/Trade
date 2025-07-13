@@ -1,6 +1,16 @@
-no-permissions: ""
+no-permissions: "&cNo Permissions"
 player-required: "&cYou must be a player in order to execute this command."
 player-offline: "&c{player} you are trying to trade with is offline."
+player-not-found: "&cFailed to find {player} is database."
+invalid-number: "&cAmount must be a number."
+invalid-uuid: "&c{uuid} is an invalid uuid."
+
+trade-admin:
+  usage:
+    - ""
+    - "&c/tradeadmin history <player> <limit>"
+    - "&c/tradeadmin view <tradeid>"
+    - ""
 
 trade:
   usage:
@@ -12,3 +22,6 @@ trade:
   request-received: "&cSuccessfully request trade request from {player}"
   self: "&cYou cannot trade with yourself."
   not-sent: "&c{player} has not send any trade request to you."
+  limit-history: "&eShowing &f{player} &ehistory &flimit = {limit}"
+  history-item: "&e{index} &fTrade UUID - {trade_id}"
+  not-found: "&cTrade with uuid {uuid} was not found."

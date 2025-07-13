@@ -34,13 +34,16 @@ public class TradeManager {
                             UUID.fromString(document.getString("tradeId")),
                             UUID.fromString(document.getString("player1")),
                             UUID.fromString(document.getString("player2")),
-                            ItemStackSerializer.itemStackArrayFromBase64(document.getString("items")));
+                            ItemStackSerializer.itemStackArrayFromBase64(document.getString("items1")),
+                            ItemStackSerializer.itemStackArrayFromBase64(document.getString("items2")));
 
                     playerTrades.add(playerTrade);
                 }
 
                 trades.put(uniqueId, playerTrades);
             }
+
+            trades.computeIfAbsent(uniqueId, k -> new ArrayList<>());
         }
     }
 
@@ -50,7 +53,8 @@ public class TradeManager {
             document.append("tradeId", playerTrade.getTradeId().toString())
                     .append("player1", playerTrade.getPlayer1().toString())
                     .append("player2", playerTrade.getPlayer2().toString())
-                    .append("items", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getTradedItems()));
+                    .append("items1", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer1Items()))
+                    .append("items2", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer2Items()));
 
             Trade.getInstance().getMongoManager().getTrades().replaceOne(Filters.eq("uuid", playerTrade.getTradeId()),
                     document, new ReplaceOptions().upsert(true));
@@ -59,6 +63,16 @@ public class TradeManager {
 
     public void saveAll() {
         trades.keySet().forEach(this::save);
+    }
+
+    public PlayerTrade getTradeById(UUID uuid) {
+        for (List<PlayerTrade> trade : trades.values()) {
+            for (PlayerTrade playerTrade : trade) {
+                if (playerTrade.getTradeId().equals(uuid)) return playerTrade;
+            }
+        }
+
+        return null;
     }
 
     public CurrentTrade getTrade(UUID uuid) {

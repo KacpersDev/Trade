@@ -1,4 +1,4 @@
-mongo-uri: ""
+mongo-uri: "mongodb://46.247.108.133:25569/"
 
 trade-countdown: 5
 
@@ -35,3 +35,19 @@ trade-inventory:
     button-slots:
       - 0
       - 8
+
+trade-view-inventory:
+  title: "&cTrade View"
+  size: 54
+  item-between:
+    item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+    name: ""
+    lore:
+      - ""
+    slots:
+      - 4
+      - 13
+      - 22
+      - 31
+      - 40
+      - 49

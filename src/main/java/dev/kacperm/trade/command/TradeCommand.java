@@ -99,7 +99,7 @@ public class TradeCommand implements CommandExecutor {
     }
 
     private void usage(CommandSender sender) {
-        for (final String s : Trade.getInstance().getLanguage().getConfiguration().getStringList("trade-usage")) {
+        for (final String s : Trade.getInstance().getLanguage().getConfiguration().getStringList("trade.usage")) {
             sender.sendMessage(Color.translate(s));
         }
     }
