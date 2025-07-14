@@ -3,7 +3,6 @@ package dev.kacperm.trade.listener;
 import dev.kacperm.trade.Trade;
 import dev.kacperm.trade.trade.CurrentTrade;
 import dev.kacperm.trade.trade.PlayerTrade;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,9 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TradeListener implements Listener {
 
@@ -98,54 +95,68 @@ public class TradeListener implements Listener {
     public void onClose(InventoryCloseEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
         CurrentTrade currentTrade = Trade.getInstance().getTradeManager().getTrade(playerId);
-        if (currentTrade == null) return;
+        if (currentTrade == null || event.getReason().equals(InventoryCloseEvent.Reason.PLUGIN)) return;
+
+        Inventory inventory = event.getInventory();
 
         List<Integer> player1Slots = Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("slots.player-1");
         List<Integer> player2Slots = Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("slots.player-2");
 
-        currentTrade.getPlayer(currentTrade.getPlayer1()).ifPresent(player -> {
-            Inventory inv = event.getInventory();
-            for (int slot : player2Slots) {
-                ItemStack item = inv.getItem(slot);
-                if (item != null) {
-                    player.getInventory().addItem(item.clone());
-                }
-            }
-            player.closeInventory();
-        });
+        Player first = currentTrade.getPlayer(currentTrade.getPlayer1()).orElse(null);
+        Player second = currentTrade.getPlayer(currentTrade.getPlayer2()).orElse(null);
 
-        currentTrade.getPlayer(currentTrade.getPlayer2()).ifPresent(player -> {
-            Inventory inv = event.getInventory();
+        if (first != null && second != null) {
             for (int slot : player1Slots) {
-                ItemStack item = inv.getItem(slot);
-                if (item != null) {
-                    player.getInventory().addItem(item.clone());
+                ItemStack item = inventory.getItem(slot);
+                if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
+                    first.getInventory().addItem(item.clone());
+                    first.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                 }
             }
-            player.closeInventory();
-        });
+
+            for (int slot : player2Slots) {
+                ItemStack item = inventory.getItem(slot);
+                if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
+                    second.getInventory().addItem(item.clone());
+                    first.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                }
+            }
+        }
 
         Trade.getInstance().getTradeManager().getCurrentTrades().remove(currentTrade);
-        Trade.getInstance().getTradeManager().getRequests().remove(playerId);
     }
-
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
         CurrentTrade currentTrade = Trade.getInstance().getTradeManager().getTrade(playerId);
         if (currentTrade == null) return;
 
+        Inventory inventory = event.getPlayer().getOpenInventory().getTopInventory();
+
+        List<Integer> player1Slots = Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("slots.player-1");
+        List<Integer> player2Slots = Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("slots.player-2");
+
+        Player first = currentTrade.getPlayer(currentTrade.getPlayer1()).orElse(null);
+        Player second = currentTrade.getPlayer(currentTrade.getPlayer2()).orElse(null);
+
+        if (first != null && second != null) {
+            for (int slot : player1Slots) {
+                ItemStack item = inventory.getItem(slot);
+                if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
+                    first.getInventory().addItem(item.clone());
+                    first.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                }
+            }
+
+            for (int slot : player2Slots) {
+                ItemStack item = inventory.getItem(slot);
+                if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
+                    second.getInventory().addItem(item.clone());
+                    first.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                }
+            }
+        }
+
         Trade.getInstance().getTradeManager().getCurrentTrades().remove(currentTrade);
-        Trade.getInstance().getTradeManager().getRequests().remove(playerId);
-
-        currentTrade.getPlayer(currentTrade.getPlayer1()).ifPresent(player -> {
-            currentTrade.getPlayer1Items().forEach(item -> player.getInventory().addItem(item));
-            player.closeInventory();
-        });
-
-        currentTrade.getPlayer(currentTrade.getPlayer2()).ifPresent(player -> {
-            currentTrade.getPlayer2Items().forEach(item -> player.getInventory().addItem(item));
-            player.closeInventory();
-        });
     }
 }
