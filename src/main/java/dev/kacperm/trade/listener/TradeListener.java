@@ -3,6 +3,9 @@ package dev.kacperm.trade.listener;
 import dev.kacperm.trade.Trade;
 import dev.kacperm.trade.trade.CurrentTrade;
 import dev.kacperm.trade.trade.PlayerTrade;
+import dev.kacperm.trade.utils.inventory.TradeInventory;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,6 +36,9 @@ public class TradeListener implements Listener {
         List<Integer> player1Slots = Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("slots.player-1");
         List<Integer> player2Slots = Trade.getInstance().getConfiguration().getConfiguration().getIntegerList("slots.player-2");
 
+        int confirmSlotOne = Trade.getInstance().getConfiguration().getConfiguration().getInt("slots.confirm-slot-1");
+        int confirmSlotTwo = Trade.getInstance().getConfiguration().getConfiguration().getInt("slots.confirm-slot-2");
+
         if (isTopInventory) {
             if ((isPlayer1 && player2Slots.contains(rawSlot)) || (!isPlayer1 && player1Slots.contains(rawSlot))) {
                 event.setCancelled(true);
@@ -57,6 +63,11 @@ public class TradeListener implements Listener {
                 player.updateInventory();
 
                 if (button.equalsIgnoreCase("not-confirmed")) {
+                    if (isTopInventory && canClick(player, event.getSlot(), currentTrade, confirmSlotOne, confirmSlotTwo)) {
+                        event.setCurrentItem(TradeInventory.confirmed());
+                        player.updateInventory();
+                    }
+
                     currentTrade.setAccepted(currentTrade.validateAcceptation());
 
                     if (currentTrade.isAccepted()) {
@@ -76,12 +87,20 @@ public class TradeListener implements Listener {
 
                         currentTrade.getPlayer(currentTrade.getPlayer1()).ifPresent(p -> {
                             p.closeInventory();
-                            currentTrade.getPlayer2Items().forEach(item -> p.getInventory().addItem(item));
+                            currentTrade.getPlayer2Items().forEach(item -> {
+                                if (item != null) {
+                                    p.getInventory().addItem(item);
+                                }
+                            });
                         });
 
                         currentTrade.getPlayer(currentTrade.getPlayer2()).ifPresent(p -> {
                             p.closeInventory();
-                            currentTrade.getPlayer1Items().forEach(item -> p.getInventory().addItem(item));
+                            currentTrade.getPlayer1Items().forEach(item -> {
+                                if (item != null) {
+                                    p.getInventory().addItem(item);
+                                }
+                            });
                         });
                     }
                 }
@@ -89,6 +108,14 @@ public class TradeListener implements Listener {
         }
 
         currentTrade.update();
+    }
+
+    private boolean canClick(Player player, int slot, CurrentTrade currentTrade, int slotOne, int slotTwo) {
+        if (currentTrade.getPlayer2().equals(player.getUniqueId())) {
+            return slotTwo == slot;
+        } else {
+            return slotOne == slot;
+        }
     }
 
     @EventHandler

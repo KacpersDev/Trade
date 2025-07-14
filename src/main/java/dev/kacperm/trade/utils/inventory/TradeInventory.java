@@ -97,4 +97,18 @@ public class TradeInventory {
 
         return inventory;
     }
+
+    public static ItemStack confirmed() {
+        ItemStack item = new ItemStack(Material.valueOf(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.confirmed.item")));
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.displayName(Color.translate(Objects.requireNonNull(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-inventory.trade-button.confirmed.name"))));
+        itemMeta.getPersistentDataContainer().set(Trade.getInstance().getButton(), PersistentDataType.STRING, "confirmed");
+        List<Component> lore = new ArrayList<>();
+        for (final String s : Trade.getInstance().getConfiguration().getConfiguration().getStringList("trade-inventory.trade-button.confirmed.lore") ) {
+            lore.add(Color.translate(s));
+        }
+        itemMeta.lore(lore);
+        item.setItemMeta(itemMeta);
+        return item;
+    }
 }

@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TradeAdminCommand implements CommandExecutor {
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
@@ -109,7 +110,7 @@ public class TradeAdminCommand implements CommandExecutor {
                             sender.sendMessage(Color.translate(Objects.requireNonNull(Objects.requireNonNull(Trade.getInstance().getLanguage()
                                             .getConfiguration().getString("trade.history-item"))
                                     .replace("{index}", String.valueOf(i + 1))
-                                    .replace("{trade_id}", trades.get(i).toString()))));
+                                    .replace("{trade_id}", trades.get(i).getTradeId().toString()))));
                         }
                     });
                 } else {
@@ -129,7 +130,7 @@ public class TradeAdminCommand implements CommandExecutor {
                         sender.sendMessage(Color.translate(Objects.requireNonNull(Objects.requireNonNull(Trade.getInstance().getLanguage()
                                         .getConfiguration().getString("trade.history-item"))
                                 .replace("{index}", String.valueOf(i + 1))
-                                .replace("{trade_id}", trades.get(i).toString()))));
+                                .replace("{trade_id}", trades.get(i).getTradeId().toString()))));
                     }
                 }
              }
@@ -141,7 +142,7 @@ public class TradeAdminCommand implements CommandExecutor {
     }
 
     private void usage(CommandSender sender) {
-        for (final String s : Trade.getInstance().getLanguage().getConfiguration().getStringList("trade-admin.-usage")) {
+        for (final String s : Trade.getInstance().getLanguage().getConfiguration().getStringList("trade-admin.usage")) {
             sender.sendMessage(Color.translate(s));
         }
     }
