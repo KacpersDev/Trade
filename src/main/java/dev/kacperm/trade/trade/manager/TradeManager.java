@@ -24,7 +24,11 @@ public class TradeManager {
 
     public void load(UUID uniqueId) throws IOException {
         if (!trades.containsKey(uniqueId)) {
-            FindIterable<Document> iterable = Trade.getInstance().getMongoManager().getTrades().find(new Document("tradeId", uniqueId));
+            FindIterable<Document> iterable = Trade.getInstance().getMongoManager().getTrades()
+                    .find(Filters.or(
+                            Filters.eq("player1", uniqueId.toString()),
+                            Filters.eq("player2", uniqueId.toString())
+                    ));
             try (MongoCursor<Document> cursor = iterable.iterator()) {
                 List<PlayerTrade> playerTrades = new ArrayList<>();
                 while (cursor.hasNext()) {
@@ -35,8 +39,8 @@ public class TradeManager {
                             UUID.fromString(document.getString("player1")),
                             UUID.fromString(document.getString("player2")),
                             ItemStackSerializer.itemStackArrayFromBase64(document.getString("items1")),
-                            ItemStackSerializer.itemStackArrayFromBase64(document.getString("items2")));
-
+                            ItemStackSerializer.itemStackArrayFromBase64(document.getString("items2"))
+                    );
                     playerTrades.add(playerTrade);
                 }
 
@@ -57,7 +61,7 @@ public class TradeManager {
                         .append("items1", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer1Items()))
                         .append("items2", ItemStackSerializer.itemStackArrayToBase64(playerTrade.getPlayer2Items()));
 
-                Trade.getInstance().getMongoManager().getTrades().replaceOne(Filters.eq("uuid", playerTrade.getTradeId()),
+                Trade.getInstance().getMongoManager().getTrades().replaceOne(Filters.eq("tradeId", playerTrade.getTradeId().toString()),
                         document, new ReplaceOptions().upsert(true));
             }
         }

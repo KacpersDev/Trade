@@ -85,23 +85,26 @@ public class TradeListener implements Listener {
                                         currentTrade.getPlayer1Items().toArray(new ItemStack[54]),
                                         currentTrade.getPlayer2Items().toArray(new ItemStack[54])));
 
-                        currentTrade.getPlayer(currentTrade.getPlayer1()).ifPresent(p -> {
-                            p.closeInventory();
-                            currentTrade.getPlayer2Items().forEach(item -> {
-                                if (item != null) {
-                                    p.getInventory().addItem(item);
-                                }
-                            });
-                        });
+                        Player first = currentTrade.getPlayer(currentTrade.getPlayer1()).orElse(null);
+                        Player second = currentTrade.getPlayer(currentTrade.getPlayer2()).orElse(null);
 
-                        currentTrade.getPlayer(currentTrade.getPlayer2()).ifPresent(p -> {
-                            p.closeInventory();
-                            currentTrade.getPlayer1Items().forEach(item -> {
-                                if (item != null) {
-                                    p.getInventory().addItem(item);
+                        if (first != null && second != null) {
+                            for (int slot : player2Slots) {
+                                ItemStack item = event.getInventory().getItem(slot);
+                                if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
+                                    first.getInventory().addItem(item.clone());
+                                    first.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                                 }
-                            });
-                        });
+                            }
+
+                            for (int slot : player1Slots) {
+                                ItemStack item = event.getInventory().getItem(slot);
+                                if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
+                                    second.getInventory().addItem(item.clone());
+                                    second.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -145,13 +148,14 @@ public class TradeListener implements Listener {
                 ItemStack item = inventory.getItem(slot);
                 if (item != null && !item.getItemMeta().getPersistentDataContainer().has(Trade.getInstance().getButton(), PersistentDataType.STRING)) {
                     second.getInventory().addItem(item.clone());
-                    first.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                    second.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                 }
             }
         }
 
         Trade.getInstance().getTradeManager().getCurrentTrades().remove(currentTrade);
     }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
