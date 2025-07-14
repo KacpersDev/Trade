@@ -5,7 +5,6 @@ import dev.kacperm.trade.command.TradeCommand;
 import dev.kacperm.trade.listener.DatabaseListener;
 import dev.kacperm.trade.listener.TradeListener;
 import dev.kacperm.trade.mongo.MongoManager;
-import dev.kacperm.trade.trade.PlayerTrade;
 import dev.kacperm.trade.trade.manager.TradeManager;
 import dev.kacperm.trade.utils.config.Config;
 import lombok.Getter;
@@ -17,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 public final class Trade extends JavaPlugin {

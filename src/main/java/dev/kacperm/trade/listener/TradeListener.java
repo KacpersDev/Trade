@@ -4,6 +4,8 @@ import dev.kacperm.trade.Trade;
 import dev.kacperm.trade.trade.CurrentTrade;
 import dev.kacperm.trade.trade.PlayerTrade;
 import dev.kacperm.trade.utils.inventory.TradeInventory;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,6 +23,13 @@ public class TradeListener implements Listener {
 
     @EventHandler
     public void onTradeInventory(InventoryClickEvent event) {
+        if (MiniMessage.miniMessage().serialize(event.getView().title())
+                .equalsIgnoreCase(Trade.getInstance().getConfiguration().getConfiguration().getString("trade-view-inventory"))
+                || LegacyComponentSerializer.legacyAmpersand().serialize(event.getView().title()).equalsIgnoreCase(Trade.getInstance()
+                .getConfiguration().getConfiguration().getString("trade-view-inventory"))) {
+            event.setCancelled(true);
+        }
+
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         UUID playerId = player.getUniqueId();
